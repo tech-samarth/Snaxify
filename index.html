@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Snaxify • Fueling Your Nights — Offers & Snacks</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+        
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        .neon-green {
+            text-shadow: 0 0 12px #22c55e, 0 0 25px #15803d;
+        }
+        
+        .product-card {
+            transition: all 0.25s ease-in-out;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 30px 30px -15px rgba(34,197,94,0.3);
+        }
+        
+        .offer-card {
+            transition: transform 0.2s ease, box-shadow 0.2s;
+        }
+        
+        .offer-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 25px -12px rgba(0,0,0,0.15);
+        }
+        
+        /* FULL CART SCROLLABLE */
+        .cart-full-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: #22c55e #ecfdf5;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .cart-full-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .cart-full-scroll::-webkit-scrollbar-track {
+            background: #ecfdf5;
+            border-radius: 10px;
+        }
+        .cart-full-scroll::-webkit-scrollbar-thumb {
+            background: #22c55e;
+            border-radius: 10px;
+        }
+        
+        .popup-toast {
+            animation: slideUpFade 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        
+        @keyframes slideUpFade {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        .modal-backdrop {
+            backdrop-filter: blur(6px);
+        }
+        
+        button:active {
+            transform: scale(0.97);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-emerald-50 via-white to-lime-50">
+
+    <!-- HEADER -->
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-md border-b border-emerald-200">
+        <div class="max-w-7xl mx-auto px-6 md:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('hero')">
+                <img src="logo.png" alt="Snaxify Logo" class="w-14 h-14 rounded-full object-cover shadow-md" onerror="this.src='https://picsum.photos/id/104/100/100'">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-black text-green-700 neon-green">Snaxify</h1>
+                    <p class="text-xs text-emerald-600 font-semibold -mt-1">Fueling Your Nights</p>
+                </div>
+            </div>
+            
+            <nav class="hidden md:flex gap-8 text-lg font-semibold">
+                <a onclick="navigateTo('offers-section')" class="cursor-pointer text-gray-700 hover:text-green-600 transition flex items-center gap-1"><i class="fa-solid fa-tag text-green-500"></i> Hot Offers</a>
+                <a onclick="navigateTo('menu')" class="cursor-pointer text-gray-700 hover:text-green-600 transition"><i class="fa-solid fa-utensils"></i> Menu</a>
+                <a onclick="navigateTo('story')" class="cursor-pointer text-gray-700 hover:text-green-600 transition"><i class="fa-regular fa-moon"></i> Story</a>
+            </nav>
+
+            <div onclick="showCart()" class="flex items-center gap-4 bg-emerald-50 px-5 py-2 rounded-full shadow-md cursor-pointer hover:bg-emerald-100 transition">
+                <div class="relative">
+                    <i class="fa-solid fa-cart-shopping text-3xl text-green-700"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shadow">0</span>
+                </div>
+                <div class="hidden sm:block">
+                    <span class="font-semibold text-gray-800">Cart</span>
+                    <div id="cart-total-header" class="text-green-600 font-bold text-sm">₹0</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section id="hero" class="min-h-[85vh] flex items-center bg-gradient-to-r from-white via-emerald-50/30 to-white">
+        <div class="max-w-7xl mx-auto px-6 md:px-8 grid md:grid-cols-2 gap-12 items-center py-12">
+            <div class="space-y-6">
+                <span class="bg-green-100 text-green-800 px-4 py-1 rounded-full text-sm font-semibold inline-block">⚡ 24/7 Cravings</span>
+                <h1 class="text-6xl md:text-7xl font-black leading-tight text-green-800 neon-green">
+                    LATE NIGHT<br>SNACKS DONE<br><span class="text-emerald-500">RIGHT</span>
+                </h1>
+                <p class="text-xl text-gray-600">Premium quality, crazy deals & taste.</p>
+                <div class="flex flex-wrap gap-4 pt-4">
+                    <button onclick="navigateTo('menu')" class="px-8 py-4 bg-green-600 text-white text-xl font-bold rounded-2xl shadow-lg hover:bg-green-700 transition flex items-center gap-2"><i class="fa-solid fa-bolt"></i> ORDER NOW</button>
+                    <button onclick="navigateTo('offers-section')" class="px-8 py-4 border-2 border-green-500 text-green-700 text-xl font-bold rounded-2xl hover:bg-green-50 transition flex items-center gap-2"><i class="fa-solid fa-gift"></i> VIEW OFFERS</button>
+                </div>
+            </div>
+            <div class="relative">
+                <img src="https://raw.githubusercontent.com/techsamarth/public/refs/heads/main/IMG-20250829-WA0044.jpg.jpeg" class="rounded-3xl shadow-2xl border-4 border-white" alt="midnight snacks">
+                <div class="absolute -bottom-5 -left-5 bg-white p-3 rounded-2xl shadow-xl flex items-center gap-2">
+                    <i class="fa-solid fa-truck-fast text-green-600 text-2xl"></i>
+                    <span class="font-bold">Room delivery*</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OFFERS SECTION -->
+    <section id="offers-section" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6 md:px-8">
+            <div class="text-center mb-14">
+                <i class="fa-solid fa-fire text-4xl text-orange-500 mb-2"></i>
+                <h2 class="text-5xl font-black text-green-800">🔥 Sizzling Offers 🔥</h2>
+                <p class="text-gray-500 text-lg mt-2">Exclusive deals, coupon codes & freebies — just for you!</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="offer-card bg-gradient-to-br from-yellow-50 to-amber-50 rounded-3xl p-6 shadow-xl border border-amber-200">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-amber-400 rounded-full w-14 h-14 flex items-center justify-center"><i class="fa-solid fa-percent text-2xl text-white"></i></div>
+                        <div><h3 class="text-2xl font-black text-amber-800">SNAX10</h3><p class="text-sm text-amber-700">Use coupon code</p></div>
+                    </div>
+                    <p class="mt-4 text-lg font-semibold">Get <span class="text-2xl font-black">10% OFF</span> on cart above ₹300</p>
+                    <button onclick="applyCouponFromOffer('SNAX10')" class="mt-5 w-full py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold transition">Apply Coupon 🎟️</button>
+                </div>
+                <div class="offer-card bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-6 shadow-xl border border-green-200">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-green-500 rounded-full w-14 h-14 flex items-center justify-center"><i class="fa-solid fa-french-fries text-2xl text-white"></i></div>
+                        <div><h3 class="text-2xl font-black text-green-800">Maggie MANIA</h3><p class="text-sm text-green-700">Free item</p></div>
+                    </div>
+                    <p class="mt-4">🍟 Buy <span class="font-black"> 4 Maggie</span> → Get 1 ABSOLUTELY FREE</p>
+                    <button onclick="navigateTo('menu')" class="mt-5 w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold transition">Grab a Extra Maggie 🍜</button>
+                </div>
+                <div class="offer-card bg-gradient-to-br from-red-50 to-orange-50 rounded-3xl p-6 shadow-xl border border-red-200">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-orange-500 rounded-full w-14 h-14 flex items-center justify-center"><i class="fa-solid fa-drumstick-bite text-2xl text-white"></i></div>
+                        <div><h3 class="text-2xl font-black text-orange-800">Coke FEST</h3><p class="text-sm text-orange-700">Spicy Deal</p></div>
+                    </div>
+                    <p class="mt-4">😋 <span class="font-black">Buy 5 Maggie to </span> → Get 1 one Coke in FREE!</p>
+                    <button onclick="navigateTo('menu')" class="mt-5 w-full py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-bold transition">Get a Free Coke 🔥</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MENU -->
+    <section id="menu" class="py-20 bg-emerald-50/60">
+        <div class="max-w-7xl mx-auto px-6 md:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-black text-green-800 inline-block border-b-4 border-green-400 pb-2">🍔 Midnight Menu</h2>
+                <p class="text-gray-600 mt-4">Tap ADD — taste the magic ✨</p>
+            </div>
+            <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
+        </div>
+    </section>
+
+    <!-- STORY -->
+    <section id="story" class="py-16 bg-white">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <i class="fa-regular fa-star text-4xl text-green-500 mb-4"></i>
+            <h3 class="text-3xl font-bold">Fueled by passion, served with crunch</h3>
+            <p class="text-gray-600 mt-4 max-w-2xl mx-auto">Snaxify was born from late-night coding sessions and growling stomachs.</p>
+        </div>
+    </section>
+    <!-- SIMPLE FOOTER -->
+<footer class="bg-white border-t border-emerald-200 mt-10">
+  <div class="max-w-7xl mx-auto px-6 py-6 text-center">
+
+    <!-- Links -->
+    <div class="flex flex-wrap justify-center gap-6 text-sm text-gray-600 font-medium">
+      <a href="contact.html" class="hover:text-green-600">Contact Us</a>
+      <a href="refund.html" class="hover:text-green-600">Refund Policy</a>
+      <a href="privacy.html" class="hover:text-green-600">Privacy Policy</a>
+      <a href="terms.html" class="hover:text-green-600">Terms & Conditions</a>
+    </div>
+
+    <!-- Copyright -->
+    <p class="text-xs text-gray-400 mt-4">
+      © 2026 Snaxify. All rights reserved.
+    </p>
+
+  </div>
+</footer>
+
+    <!-- CART MODAL -->
+    <div id="cart-modal" onclick="if(event.target===this) hideCart()" class="hidden fixed inset-0 bg-black/70 z-[9999] flex items-center justify-center modal-backdrop">
+        <div onclick="event.stopPropagation()" class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl max-h-[90vh] flex flex-col overflow-hidden">
+            <div class="px-8 py-6 border-b flex justify-between items-center bg-white sticky top-0 z-10">
+                <h3 class="text-4xl font-black text-green-700"><i class="fa-solid fa-bag-shopping"></i> Your Cart</h3>
+                <i onclick="hideCart()" class="fa-solid fa-xmark text-4xl cursor-pointer hover:text-red-500"></i>
+            </div>
+            <div class="cart-full-scroll flex-1 overflow-y-auto">
+                <div id="cart-items" class="px-8 py-6 space-y-6"></div>
+                <div id="free-item-selector" class="hidden px-8 py-5 bg-gradient-to-r from-emerald-100 to-green-100 border-t border-emerald-200">
+                    <p class="font-extrabold text-green-800 flex items-center gap-2"><i class="fa-solid fa-gift"></i> 🎉 You qualify for a FREE item! Choose below:</p>
+                    <select id="free-product-select" onchange="selectFreeProduct()" class="mt-3 w-full px-5 py-4 rounded-2xl border-2 border-green-300 font-semibold"></select>
+                </div>
+                <div class="px-8 py-5 bg-gray-50 border-y border-gray-200">
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input id="coupon-input" type="text" placeholder="Enter code: sam10" class="flex-1 px-5 py-4 rounded-2xl border focus:border-green-500 outline-none">
+                        <button onclick="applyCoupon()" class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-2xl font-bold transition">Apply Coupon</button>
+                    </div>
+                    <div id="coupon-status" class="mt-2 text-sm font-medium"></div>
+                </div>
+                <div class="px-8 py-6 bg-white space-y-3">
+                    <div class="flex justify-between text-xl"><span>Subtotal</span><span id="subtotal" class="font-bold">₹0</span></div>
+                    <div id="free-row" class="hidden flex justify-between text-xl text-emerald-600"><span><i class="fa-regular fa-star"></i> <span id="free-name"></span></span><span>-₹<span id="free-value"></span></span></div>
+                    <div id="coupon-row" class="hidden flex justify-between text-xl text-emerald-600"><span><i class="fa-solid fa-tag"></i> <span id="coupon-name"></span></span><span>-₹<span id="coupon-value"></span></span></div>
+                    <div class="flex justify-between text-4xl font-black border-t pt-5"><span>Total</span><span id="final-total" class="text-green-600">₹0</span></div>
+                    <button onclick="proceedToCheckout()" class="w-full py-6 text-2xl font-black bg-green-600 hover:bg-green-700 text-white rounded-2xl mt-4 transition shadow-xl"><i class="fa-regular fa-credit-card"></i> PLACE ORDER</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Room Modal -->
+    <div id="room-modal" onclick="if(event.target===this) hideRoomModal()" class="hidden fixed inset-0 bg-black/70 z-[10000] flex items-center justify-center modal-backdrop">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full text-center shadow-2xl">
+            <i class="fa-solid fa-door-open text-5xl text-green-600 mb-4"></i>
+            <h3 class="text-4xl font-black text-green-700">Room Number</h3>
+            <input id="room-input" type="text" placeholder="e.g., Room 401" class="w-full text-center text-4xl font-bold py-5 border-4 border-dashed border-green-300 rounded-2xl mt-5 outline-none focus:border-green-500">
+            <div class="flex gap-4 mt-8"><button onclick="hideRoomModal()" class="flex-1 py-4 rounded-2xl border">Cancel</button><button onclick="confirmOrder()" class="flex-1 py-4 bg-green-600 text-white rounded-2xl font-bold">Confirm</button></div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="product-toast" class="hidden fixed bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 z-[10001] popup-toast">
+        <i class="fa-solid fa-circle-check text-green-400 text-2xl"></i>
+        <span id="toast-message" class="font-semibold text-lg"></span>
+    </div>
+
+    
+    <script>
+        let productsData = [];
+let couponsData = [];
+async function loadData() {
+    try {
+        // fetch products
+        const productsRes = await fetch('products.json');
+        productsData = await productsRes.json();
+
+        // fetch coupons
+        const couponsRes = await fetch('coupons.json');
+        couponsData = await couponsRes.json();
+
+        console.log("✅ Data loaded:", productsData, couponsData);
+
+        // render UI after loading
+        renderProducts();
+        updateHeader();
+        checkFreeEligibility();
+
+    } catch (err) {
+        console.error("❌ Error loading data:", err);
+        alert("Failed to load products. Are you running via Live Server?");
+    }
+}
+      
+        
+        let cart = [];
+        let freeItemApplied = false;
+        let freeSelectedProductId = null;
+        let appliedCoupon = null;
+        
+        function saveCart() { localStorage.setItem('snaixify-cart', JSON.stringify(cart)); }
+        function loadCart() { const saved = localStorage.getItem('snaixify-cart'); if(saved) cart = JSON.parse(saved); else cart = []; }
+        
+        function updateHeader() {
+            const count = cart.reduce((a,i)=>a+i.qty,0);
+            const total = cart.reduce((a,i)=>a + i.price*i.qty,0);
+            document.getElementById('cart-count').innerText = count;
+            document.getElementById('cart-total-header').innerHTML = `₹${total}`;
+        }
+        
+        function showToastMessage(msg) {
+            const toastDiv = document.getElementById('product-toast');
+            document.getElementById('toast-message').innerText = msg;
+            toastDiv.classList.remove('hidden');
+            setTimeout(() => toastDiv.classList.add('hidden'), 2300);
+        }
+        
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            if(!grid) return;
+            grid.innerHTML = '';
+            productsData.forEach(p => {
+                const inCart = cart.find(i => i.id === p.id);
+                const card = document.createElement('div');
+                card.className = "product-card bg-white rounded-2xl overflow-hidden shadow-lg transition-all";
+                card.innerHTML = `
+                    <img src="${p.image}" class="w-full h-56 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-bold text-xl">${p.name}</h4>
+                        <div class="flex justify-between items-center mt-5">
+                            <span class="text-2xl font-black text-green-600">₹${p.price}</span>
+                            ${inCart ? 
+                            `<div class="flex items-center gap-5 text-2xl bg-gray-100 px-3 py-1 rounded-full">
+                                <button onclick="changeQty(${p.id},-1)" class="text-red-500 font-bold px-2">-</button>
+                                <span class="font-bold w-8 text-center">${inCart.qty}</span>
+                                <button onclick="changeQty(${p.id},1)" class="text-green-600 font-bold px-2">+</button>
+                            </div>` : 
+                            `<button onclick="addToCart(${p.id})" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-bold transition shadow-md">ADD</button>`}
+                        </div>
+                    </div>`;
+                grid.appendChild(card);
+            });
+        }
+        
+        function addToCart(id) {
+            const product = productsData.find(p => p.id === id);
+            const existing = cart.find(i => i.id === id);
+            if(existing) existing.qty++;
+            else cart.push({...product, qty:1});
+            saveCart();
+            renderProducts();
+            updateHeader();
+            checkFreeEligibility();
+            showToastMessage(`✓ ${product.name} added to cart!`);
+            if(document.getElementById('cart-modal').style.display === 'flex') renderCart();
+        }
+        
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if(!item) return;
+            item.qty += delta;
+            if(item.qty <= 0) cart = cart.filter(i => i.id !== id);
+            saveCart();
+            renderProducts();
+            updateHeader();
+            if(document.getElementById('cart-modal').style.display === 'flex') renderCart();
+            checkFreeEligibility();
+            showToastMessage(delta>0 ? `➕ Increased quantity` : `➖ Updated quantity`);
+        }
+        
+        function removeFromCart(idx) { 
+            const removed = cart[idx];
+            cart.splice(idx,1); 
+            saveCart(); 
+            renderCart(); 
+            renderProducts(); 
+            updateHeader(); 
+            checkFreeEligibility(); 
+            showToastMessage(`🗑️ Removed ${removed.name}`);
+        }
+        
+        function checkFreeEligibility() {
+            const selectorDiv = document.getElementById('free-item-selector');
+            const selectEl = document.getElementById('free-product-select');
+            if(!selectorDiv) return;
+            selectEl.innerHTML = '<option value="">🎁 Select your free item</option>';
+            let hasEligible = false;
+            cart.forEach(item => {
+                const rule = couponsData.find(c => c.type === 'free_item' && c.productId === item.id);
+                if(rule && item.qty >= rule.buyQty && !freeItemApplied) {
+                    selectEl.innerHTML += `<option value="${item.id}">${item.name} (₹${item.price}) - FREE</option>`;
+                    hasEligible = true;
+                }
+            });
+            if(hasEligible && !freeItemApplied) selectorDiv.classList.remove('hidden');
+            else if(freeItemApplied) selectorDiv.classList.add('hidden');
+            else selectorDiv.classList.add('hidden');
+        }
+        
+        function selectFreeProduct() {
+            const val = document.getElementById('free-product-select').value;
+            if(!val) return;
+            freeSelectedProductId = parseInt(val);
+            freeItemApplied = true;
+            renderCart();
+            showToastMessage(`🎁 Free item applied!`);
+            document.getElementById('free-item-selector').classList.add('hidden');
+        }
+        
+        function applyCoupon() {
+            const code = document.getElementById('coupon-input').value.trim().toLowerCase();
+            if(code === "SNAX10") {
+                appliedCoupon = {code:"SNAX10", percent:10};
+                document.getElementById('coupon-status').innerHTML = `<span class="text-green-600">✅ Coupon SNAX10 applied! 10% off (min total ₹200)</span>`;
+                renderCart();
+                showToastMessage(`✨ Coupon applied! 10% off`);
+            } else {
+                document.getElementById('coupon-status').innerHTML = `<span class="text-red-500">❌ Invalid coupon code</span>`;
+            }
+        }
+        
+        function applyCouponFromOffer(code) {
+            document.getElementById('coupon-input').value = code;
+            applyCoupon();
+            navigateTo('menu');
+            showToastMessage(`🔥 Coupon ${code.toUpperCase()} activated!`);
+        }
+        
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            if(!container) return;
+            container.innerHTML = '';
+            if(cart.length===0) { container.innerHTML = `<div class="text-center py-16 text-gray-400 text-xl"><i class="fa-regular fa-cart-empty"></i> Cart is empty</div>`; updateSummary(); return; }
+            cart.forEach((item,idx) => {
+                const div = document.createElement('div');
+                div.className = "flex gap-5 items-center border-b pb-5 mb-2";
+                div.innerHTML = `<img src="${item.image}" class="w-20 h-20 object-cover rounded-xl"><div class="flex-1"><div class="font-bold text-lg">${item.name}</div><div class="flex items-center gap-4 mt-2"><button onclick="changeQty(${item.id},-1)" class="text-xl w-8 h-8 rounded-full bg-gray-100">-</button><span class="font-bold text-xl">${item.qty}</span><button onclick="changeQty(${item.id},1)" class="text-xl w-8 h-8 rounded-full bg-green-100 text-green-600">+</button></div></div><div class="text-right"><div class="font-black text-xl">₹${item.price * item.qty}</div><button onclick="removeFromCart(${idx})" class="text-red-400 text-sm mt-2 underline">Remove</button></div>`;
+                container.appendChild(div);
+            });
+            updateSummary();
+        }
+        
+        function updateSummary() {
+            let subtotal = cart.reduce((s,i)=>s + i.price*i.qty,0);
+            let freeValue = 0, freeName = '';
+            if(freeItemApplied && freeSelectedProductId) {
+                const freeProd = cart.find(i=>i.id === freeSelectedProductId);
+                if(freeProd) { freeValue = freeProd.price; freeName = freeProd.name; }
+            }
+            let couponDiscount = 0;
+            if(appliedCoupon && appliedCoupon.code === "SNAX10") {
+                let eligibleTotal = subtotal - freeValue;
+                if(eligibleTotal >= 200) couponDiscount = Math.floor(eligibleTotal * 0.1);
+                else couponDiscount = 0;
+            }
+            const finalTotal = Math.max(0, subtotal - freeValue - couponDiscount);
+            document.getElementById('subtotal').innerText = `₹${subtotal}`;
+            document.getElementById('final-total').innerText = `₹${finalTotal}`;
+            const freeRow = document.getElementById('free-row');
+            if(freeValue>0) { freeRow.classList.remove('hidden'); document.getElementById('free-name').innerHTML = `FREE • ${freeName}`; document.getElementById('free-value').innerText = freeValue; }
+            else freeRow.classList.add('hidden');
+            const coupRow = document.getElementById('coupon-row');
+            if(appliedCoupon && couponDiscount>0) { coupRow.classList.remove('hidden'); document.getElementById('coupon-name').innerHTML = appliedCoupon.code.toUpperCase(); document.getElementById('coupon-value').innerText = couponDiscount; }
+            else coupRow.classList.add('hidden');
+        }
+        
+        function showCart() { document.getElementById('cart-modal').style.display = 'flex'; renderCart(); }
+        function hideCart() { document.getElementById('cart-modal').style.display = 'none'; }
+        function proceedToCheckout() { hideCart(); setTimeout(()=>document.getElementById('room-modal').style.display='flex',200); }
+        function hideRoomModal() { document.getElementById('room-modal').style.display = 'none'; }
+        
+        // PERFECT WHATSAPP MESSAGE with required format
+      function confirmOrder() {
+    if (cart.length === 0) {
+        alert("Cart is empty!");
+        return;
+    }
+
+    const room = document.getElementById('room-input').value.trim() || "Room 405";
+    const orderId = `SNX${Math.floor(100000 + Math.random() * 900000)}`;
+    
+    let subtotal = cart.reduce((s,i)=>s + i.price*i.qty,0);
+    let freeValue = 0, freeName = '';
+
+    if(freeItemApplied && freeSelectedProductId) {
+        const freeProd = cart.find(i=>i.id === freeSelectedProductId);
+        if(freeProd) {
+            freeValue = freeProd.price;
+            freeName = freeProd.name;
+        }
+    }
+
+    let couponDiscount = 0;
+    if(appliedCoupon && appliedCoupon.code === "SNAX10") {
+        let eligibleTotal = subtotal - freeValue;
+        if(eligibleTotal >= 200) {
+            couponDiscount = Math.floor(eligibleTotal * 0.1);
+        }
+    }
+
+    const finalTotal = Math.max(0, subtotal - freeValue - couponDiscount);
+
+    let msg = `🔥 *Snaxify Order #${orderId}*\n\n`;
+    msg += `*Room:* ${room}\n\n`;
+    msg += `*Items:*\n`;
+
+    cart.forEach(i => {
+        msg += `• ${i.name} ×${i.qty} = ₹${i.price * i.qty}\n`;
+    });
+
+    if (freeItemApplied && freeSelectedProductId) {
+        msg += `\n🎁 *FREE:* ${freeName}\n`;
+    }
+
+    if (appliedCoupon && couponDiscount > 0) {
+        msg += `\n💰 *Coupon:* ${appliedCoupon.code}\n`;
+    }
+
+    msg += `\n*Total:* ₹${finalTotal}\n\n`;
+
+    // ✅ SAFE payment link
+    // 🔐 Encode amount
+const encodedAmount = btoa(finalTotal.toString());
+
+// ✅ Safe base URL
+const baseUrl = window.location.href.replace('index.html','');
+
+// 🔗 Final encrypted payment link
+const paymentLink = `${baseUrl}payment.html?amt=${encodedAmount}&orderId=${orderId}`;
+
+msg += `💳 *Pay Securely:* ${paymentLink}`;
+
+    window.open(`https://wa.me/919395484656?text=${encodeURIComponent(msg)}`, '_blank');
+
+    // reset
+    cart = [];
+    freeItemApplied = false;
+    freeSelectedProductId = null;
+    appliedCoupon = null;
+
+    saveCart();
+    renderProducts();
+    updateHeader();
+    hideRoomModal();
+    showToastMessage(`🎉 Order placed! Check WhatsApp.`);
+}
+        
+        function navigateTo(id) {
+            const el = document.getElementById(id);
+            if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+        
+        window.onload = () => {
+            loadCart();
+            loadData();
+           
+        };
+    </script>
+</body>
+</html>

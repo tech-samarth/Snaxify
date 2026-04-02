@@ -1,0 +1,26 @@
+[
+  {
+    "type": "free_item",
+    "productId": 1,
+    "buyQty": 5,
+    "description": "Buy 4 of Product ID 1 → Get 1 free of same product"
+  },
+  {
+    "type": "free_item",
+    "productId": 2,
+    "buyQty": 5,
+    "description": "Buy 4 of Product ID 2 → Get 1 free of same product"
+  },
+  {
+    "type": "free_item",
+    "productId": 3,
+    "buyQty": 5,
+    "description": "Buy 4 of Product ID 2 → Get 1 free of same product"
+  },
+  {
+    "type": "discount",
+    "code": "SNAX10",
+    "min_total": 300,
+    "percent": 10
+  }
+]

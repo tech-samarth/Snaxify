@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snaixify • Secure Payment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        
+        body { font-family: 'Poppins', sans-serif; }
+        
+        .glow { animation: glowPulse 2s ease-in-out infinite; }
+        @keyframes glowPulse {
+            0%, 100% { text-shadow: 0 0 20px #22c55e, 0 0 40px #22c55e; }
+            50% { text-shadow: 0 0 30px #22c55e, 0 0 60px #22c55e; }
+        }
+        
+        .qr-float { animation: qrFloat 3s ease-in-out infinite; }
+        @keyframes qrFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-emerald-50 min-h-screen flex items-center justify-center p-6">
+
+    <div class="max-w-md w-full bg-white rounded-3xl shadow-2xl overflow-hidden border border-green-100">
+        
+        <div class="bg-gradient-to-r from-green-500 to-emerald-500 px-8 py-10 text-white text-center">
+            <img src="logo.png" class="w-20 h-20 mx-auto mb-4">
+            <h1 class="text-4xl font-black neon">Snaixify</h1>
+            <p class="text-emerald-100">Secure Checkout</p>
+        </div>
+        
+        <div class="p-8">
+            <div class="bg-emerald-50 rounded-3xl p-8 text-center mb-10">
+                <p class="text-emerald-600 text-sm font-semibold tracking-widest">AMOUNT TO PAY</p>
+                <h2 id="amount-display" class="text-7xl font-black text-green-700 mt-3">₹0</h2>
+                <p id="order-id-display" class="text-emerald-500 font-medium mt-2"></p>
+            </div>
+            
+            <div class="text-center mb-10">
+                <div id="qr-container" class="qr-float bg-white p-6 rounded-3xl inline-block shadow-2xl mx-auto">
+                    <!-- QR injected -->
+                </div>
+                <p class="text-xs text-gray-400 mt-6">Scan with any UPI app</p>
+            </div>
+            
+            <button onclick="proceedUPI()" 
+                    class="w-full py-8 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-3xl font-bold rounded-3xl flex items-center justify-center gap-4">
+                <i class="fa-solid fa-bolt"></i> PAY WITH UPI
+            </button>
+            
+            <div class="text-center mt-8">
+                <button onclick="copyLink()" class="text-emerald-600 font-semibold flex items-center gap-2 mx-auto">
+                    <i class="fa-solid fa-copy"></i> Copy Payment Link
+                </button>
+            </div>
+        </div>
+        
+        <div class="border-t px-8 py-6 text-xs text-gray-400 flex justify-between">
+            <div>🔒 SSL Secured</div>
+            <div onclick="window.location.href='index.html'" class="cursor-pointer hover:text-green-600">← Back to Snaixify</div>
+        </div>
+    </div>
+
+    <script>
+        function decodeBase64(str) {
+            try { return parseFloat(atob(str)); } catch(e) { return 0; }
+        }
+        
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const encoded = params.get('amt');
+            return {
+                amount: encoded ? decodeBase64(encoded) : 0,
+                orderId: params.get('orderId') || 'SNX-XXXXXX'
+            };
+        }
+        
+        function generateQRCode(amount, orderId) {
+            const upiId = "snaxify11@axl";
+            const upiLink = `upi://pay?pa=${upiId}&pn=Snaixify&tn=Order%20${orderId}&am=${amount}&cu=INR`;
+            const qrUrl = `https://quickchart.io/qr?text=${encodeURIComponent(upiLink)}&size=280&margin=2&dark=22c55e&light=ffffff`;
+            
+            document.getElementById('qr-container').innerHTML = `
+                <img src="${qrUrl}" class="rounded-2xl">
+                <div class="text-center mt-4 text-xs text-gray-500">₹${amount} • ${orderId}</div>`;
+        }
+        
+        function proceedUPI() {
+            const { amount } = getUrlParams();
+            if (amount <= 0) return;
+            const link = `upi://pay?pa=snaxify11@axl&pn=Snaixify&tn=Order%20Payment&am=${amount}&cu=INR`;
+            window.location.href = link;
+        }
+        
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => alert('Payment link copied!'));
+        }
+        
+        window.onload = () => {
+            const { amount, orderId } = getUrlParams();
+            document.getElementById('amount-display').textContent = `₹${amount}`;
+            document.getElementById('order-id-display').textContent = `Order ID: ${orderId}`;
+            if (amount > 0) generateQRCode(amount, orderId);
+        };
+    </script>
+</body>
+</html>
