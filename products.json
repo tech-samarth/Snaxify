@@ -1,11 +1,5 @@
 [
-  {"id":1,"name":"Special Maggie","image":"https://raw.githubusercontent.com/techsamarth/public/refs/heads/main/Gemini_Generated_Image_7ylksk7ylksk7ylk%20(1).jpg","price":40},
-  {"id":2,"name":"Special Egg Maggie","image":"https://www.licious.in/blog/wp-content/uploads/2020/12/Egg-Maggi-600x600.jpg","price":50},
-  {"id":3,"name":"Maggie","image":"https://raw.githubusercontent.com/techsamarth/public/refs/heads/main/MaggieBoiled.jpg","price":30},
-  {"id":13,"name":"Special Maggie Combo","image":"https://raw.githubusercontent.com/tech-samarth/public/refs/heads/main/IMG-20260401-WA0013.jpg","price":60},
-  {"id":14,"name":"Special EGG Maggie Combo","image":"https://raw.githubusercontent.com/tech-samarth/public/refs/heads/main/IMG-20260401-WA0014.jpg","price":70},
   {"id":9,"name":"Coke 250ml","image":"https://raw.githubusercontent.com/techsamarth/public/refs/heads/main/coke.jpg","price":25},
-  {"id":4,"name":"2 Boiled egg","image":"https://raw.githubusercontent.com/techsamarth/public/refs/heads/main/eggs.jpg","price":25},
   {"id":5,"name":"Coffee","image":"https://raw.githubusercontent.com/techsamarth/public/refs/heads/main/coffee.jpg","price":15},
   {"id":6,"name":"Raw Maggie","image":"https://raw.githubusercontent.com/techsamarth/public/refs/heads/main/Maggie.jpg","price":20},
   {"id":21,"name":"Chicken Noodles","image":"https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcTdMOgYSKdbNlEDamu7JarAFzUa21wj3c4VBqILmQMYEZTzh9b03r6iO9zWhMcVsbJvxSo52DFjkSHcaDvkTek3lon3RVFJ","price":60},
